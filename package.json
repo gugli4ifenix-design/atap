@@ -1,0 +1,51 @@
+{
+  "name": "atap",
+  "version": "0.1.0",
+  "description": "Agent Trust and Accountability Protocol — open standard for internal accountability in multi-agent AI systems",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "keywords": [
+    "ai-agents",
+    "multi-agent",
+    "accountability",
+    "trust",
+    "governance",
+    "audit",
+    "consent",
+    "arbitration",
+    "llm",
+    "protocol",
+    "standard"
+  ],
+  "author": "Kirill Fenix <trust-layer@jarvis-os.com>",
+  "license": "CC-BY-4.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jarvisOS/atap"
+  },
+  "homepage": "https://github.com/jarvisOS/atap#readme",
+  "bugs": {
+    "url": "https://github.com/jarvisOS/atap/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "src/",
+    "SPEC.md",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node examples/basic.js",
+    "example": "node examples/basic.js"
+  },
+  "dependencies": {},
+  "optionalDependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "devDependencies": {}
+}
