@@ -1,7 +1,7 @@
 {
   "name": "atap",
   "version": "0.1.0",
-  "description": "Agent Trust and Accountability Protocol — open standard for internal accountability in multi-agent AI systems",
+  "description": "Agent Trust and Accountability Protocol \u2014 open standard for internal accountability in multi-agent AI systems",
   "main": "index.js",
   "types": "index.d.ts",
   "keywords": [
@@ -21,11 +21,11 @@
   "license": "CC-BY-4.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jarvisOS/atap"
+    "url": "https://github.com/gugli4ifenix-design/atap"
   },
-  "homepage": "https://github.com/jarvisOS/atap#readme",
+  "homepage": "https://github.com/gugli4ifenix-design/atap#readme",
   "bugs": {
-    "url": "https://github.com/jarvisOS/atap/issues"
+    "url": "https://github.com/gugli4ifenix-design/atap/issues"
   },
   "engines": {
     "node": ">=16.0.0"

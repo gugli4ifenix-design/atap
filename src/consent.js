@@ -1,105 +1,100 @@
-/**
- * ATAP — Consent Engine
- * Policy-based authorization before agent actions.
- *
- * Policies are defined by system owners, not by agents.
- * Agents cannot modify their own policies.
- */
-
 'use strict';
-
-// ─── Default policies ─────────────────────────────────────────────────────────
-// Override or extend these with setPolicy() for your system.
 
 const POLICIES = {
   _default: {
-    _any: {
-      limit:            null,
-      require_approval: false,
-      reason:           'Allowed by default'
-    }
+    _any: { limit: null, require_approval: false }
   }
 };
 
-/**
- * Check if an agent is authorized to perform an action.
- *
- * Evaluation order (most specific wins):
- * 1. agent:action  — exact match
- * 2. agent:*       — agent-level default
- * 3. *:action      — action-level default
- * 4. *:*           — system default → ALLOW
- *
- * @param {string} agent   - Agent identifier
- * @param {string} action  - Action being attempted
- * @param {object} params  - Optional parameters (e.g. { amount: 300, approved: true })
- * @returns {ConsentResult}
- */
+function _clone(v) {
+  return JSON.parse(JSON.stringify(v));
+}
+
+function _resolve(agent, action) {
+  return (
+    (POLICIES[agent] && POLICIES[agent][action]) ||
+    (POLICIES[agent] && POLICIES[agent]['*']) ||
+    (POLICIES['*'] && POLICIES['*'][action]) ||
+    POLICIES._default._any
+  );
+}
+
 function check(agent, action, params = {}) {
   const policy = _resolve(agent, action);
 
-  // Numeric limit check
-  if (policy.limit !== null && params.amount !== undefined && params.amount > policy.limit) {
-    return {
-      allowed:           false,
-      requires_approval: true,
-      reason:            `[${agent}→${action}] Exceeds limit ${policy.limit}. ${policy.reason}`
-    };
+  if (policy.limit !== null && policy.limit !== undefined) {
+    const amount = Number(params.amount);
+    const limit = Number(policy.limit);
+
+    if (!Number.isFinite(limit)) {
+      return {
+        allowed: false,
+        reason: 'Policy misconfigured: invalid limit',
+        requires_approval: true,
+      };
+    }
+
+    if (Number.isFinite(amount) && amount > limit) {
+      return {
+        allowed: false,
+        reason: `Amount ${amount} exceeds limit ${limit}`,
+        requires_approval: true,
+      };
+    }
   }
 
-  // Explicit approval required
-  if (policy.require_approval && !params.approved) {
+  if (policy.require_approval === true && params.approved !== true) {
     return {
-      allowed:           false,
+      allowed: false,
+      reason: 'Explicit approval required',
       requires_approval: true,
-      reason:            `[${agent}→${action}] Requires owner approval. ${policy.reason}`
     };
   }
 
   return {
-    allowed:           true,
+    allowed: true,
+    reason: 'Allowed by policy',
     requires_approval: false,
-    reason:            `[${agent}→${action}] Allowed. ${policy.reason}`
   };
 }
 
-/**
- * Set or update a policy for agent:action.
- *
- * @param {string} agent
- * @param {string} action
- * @param {object} policy - { limit, require_approval, reason }
- */
-function setPolicy(agent, action, policy) {
-  if (!POLICIES[agent]) POLICIES[agent] = {};
-  POLICIES[agent][action] = {
-    limit:            policy.limit            ?? null,
-    require_approval: policy.require_approval ?? false,
-    reason:           policy.reason           || '',
-  };
+function setPolicy(agent, action, policy = {}) {
+  if (!agent || !action) {
+    throw new Error('agent and action are required');
+  }
+
+  if (!POLICIES[agent]) {
+    POLICIES[agent] = {};
+  }
+
+  const next = {};
+
+  if (Object.prototype.hasOwnProperty.call(policy, 'limit')) {
+    if (policy.limit !== null && !Number.isFinite(Number(policy.limit))) {
+      throw new Error('limit must be a number or null');
+    }
+    next.limit = policy.limit === null ? null : Number(policy.limit);
+  } else {
+    next.limit = null;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(policy, 'require_approval')) {
+    next.require_approval = policy.require_approval === true;
+  } else {
+    next.require_approval = false;
+  }
+
+  POLICIES[agent][action] = next;
+  return POLICIES[agent][action];
 }
 
-/**
- * Get all policies configured for an agent.
- *
- * @param {string} agent
- * @returns {object}
- */
-function getPolicies(agent) {
-  return POLICIES[agent] || POLICIES._default;
+function _policies() {
+  return _clone(POLICIES);
 }
 
-// ─── Internal ─────────────────────────────────────────────────────────────────
-
-function _resolve(agent, action) {
-  return (
-    POLICIES[agent]?.[action]      ||   // agent:action
-    POLICIES[agent]?.['*']         ||   // agent:*
-    POLICIES['*']?.[action]        ||   // *:action
-    POLICIES._default._any              // system default
-  );
-}
-
-function _policies() { return POLICIES; }
-
-module.exports = { check, setPolicy, getPolicies, _policies };
+module.exports = {
+  check,
+  setPolicy,
+  _resolve,
+  _policies,
+};

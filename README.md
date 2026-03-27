@@ -1,8 +1,9 @@
 # ATAP — Agent Trust and Accountability Protocol
 
+[![npm version](https://img.shields.io/npm/v/atap.svg)](https://www.npmjs.com/package/atap)
+[![npm downloads](https://img.shields.io/npm/dm/atap.svg)](https://www.npmjs.com/package/atap)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
-[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)]()
-[![Status](https://img.shields.io/badge/status-draft-orange.svg)]()
+[![GitHub stars](https://img.shields.io/github/stars/gugli4ifenix-design/atap?style=social)](https://github.com/gugli4ifenix-design/atap)
 
 > **The open standard for internal accountability in multi-agent AI systems.**
 
@@ -203,3 +204,44 @@ including commercial — provided you give appropriate credit.
 Published: March 17, 2026
 
 *"Everyone is building passports. We are building employment contracts."*
+
+---
+
+## Integrations
+
+ATAP is framework-agnostic. Works with any multi-agent stack:
+
+```javascript
+// LangChain
+const { AgentExecutor } = require('langchain/agents');
+const atap = require('atap');
+
+// Wrap any agent action with accountability
+const result = await atap.guard('langchain-agent', 'web_search', { query });
+if (!result.allowed) throw new Error(result.reason);
+```
+
+```javascript
+// CrewAI / any Python framework — REST mode
+// POST https://your-server/api/atap/guard
+// { agent: "researcher", action: "scrape_url", params: { url } }
+```
+
+## Why ATAP vs rolling your own
+
+| | ATAP | Custom logging |
+|---|---|---|
+| Policy enforcement | ✅ | ❌ |
+| Human-readable audit | ✅ | ❌ |
+| Conflict arbitration | ✅ | ❌ |
+| Zero dependencies | ✅ | ✅ |
+| Open standard | ✅ | ❌ |
+
+## Used in production
+
+ATAP is the trust layer inside [JARVIS OS](https://github.com/gugli4ifenix-design/jarvis-os-ton) — a 14-agent autonomous platform running 24/7 on a single VPS.
+
+## Star History
+
+If ATAP solves a problem you've been wrestling with, a ⭐ helps others find it.
+
