@@ -245,3 +245,50 @@ ATAP is the trust layer inside [JARVIS OS](https://github.com/gugli4ifenix-desig
 
 If ATAP solves a problem you've been wrestling with, a ⭐ helps others find it.
 
+
+---
+
+## Products Built on ATAP
+
+### 🛡 Governance Shield
+**Real-time DeFi governance monitoring — the first product powered by ATAP.**
+
+DeFi protocols hold billions in user deposits, but depositors have no way to know when administrators change critical parameters. Governance Shield monitors governance actions in real-time and alerts depositors before their money is affected.
+
+- **Telegram**: [@GovShieldAlerts](https://t.me/GovShieldAlerts)
+- **Monitors**: Aave V3 PoolConfigurator, ACL Manager (12 event types)
+- **Risk levels**: 🔴 CRITICAL (role changes, reserve drops) · 🟠 HIGH (collateral params) · 🟡 MEDIUM (caps, fees)
+- **ATAP integration**: Consent Engine validates governance actions, Audit Chain records all changes
+
+> *Silence = safety. A message = governance is acting on your money.*
+
+### 🤖 JARVIS Liquidation Bot
+Autonomous DeFi liquidation system deployed on Ethereum Mainnet and Arbitrum. Uses ATAP Consent Engine for trust levels: 🟢 autonomous (monitoring) · 🟡 auto+rollback (execution) · 🔴 human approval (withdrawals).
+
+---
+
+## Academic Validation
+
+ATAP's four design properties are independently validated by recent research:
+
+> **"Code as Scaffold for LLM-Based Agents"** (arXiv:2605.18747, May 2025)
+>
+> This 100+ page survey argues that future agent systems must possess four properties:
+> **executability**, **inspectability**, **statefulness**, and **controllability**.
+>
+> ATAP implements all four:
+> | Property | ATAP Component |
+> |---|---|
+> | Executability | Consent Engine (policy execution) |
+> | Inspectability | Audit Chain (human-readable trails) |
+> | Statefulness | Policy persistence + decision history |
+> | Controllability | Arbitration Protocol + trust levels |
+
+---
+
+## Recognition
+
+- **TON Foundation Grant** — funded development of ATAP specification
+- **NIST AI Agent Standards** — public comment submitted
+- **LangChain** — [Kevros Governance Tools PR #35338](https://github.com/langchain-ai/langchain/issues/35338)
+- **Production deployment** — JARVIS OS (84 agents, 4 servers, 24/7 since March 2026)
