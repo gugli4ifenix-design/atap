@@ -362,3 +362,170 @@ provided you give appropriate credit to the original authors.
 
 © 2026 JARVIS OS Project. All rights reserved.
 Specification authored by Kirill Fenix.
+
+---
+
+## ATAP v0.2 Additions (2026-05-27)
+
+> Inspired by Microsoft Agent Governance Toolkit analysis.
+> All 5 additions implemented and tested in JARVIS OS (84 agents, 4 servers).
+
+---
+
+## 4. Trust Decay (v0.2)
+
+### 4.1 Overview
+
+Static trust levels (allow/warn/deny) are insufficient for autonomous agents.
+Trust Decay introduces a **numerical trust score (0-1000)** for each agent
+that evolves based on behavioral history.
+
+### 4.2 Trust Score Scale
+
+| Range | Tier | Meaning |
+|-------|------|---------|
+| 900-1000 | Sovereign | Full autonomy, can create sub-agents |
+| 700-899 | Trusted | Standard operations, no oversight needed |
+| 400-699 | Probation | Actions logged, periodic review |
+| 200-399 | Restricted | Requires approval for non-read operations |
+| 0-199 | Quarantine | Read-only, pending investigation |
+
+### 4.3 Decay/Boost Rules
+
+- **Success**: +2 per successful operation (slow growth)
+- **Failure**: -5 per failed operation (fast decay)
+- **Idle**: -1 per evaluation cycle if unused (prevents stale trust)
+- **Violation**: -50 per policy violation (immediate consequence)
+- **Maximum**: 1000, **Minimum**: 0
+
+### 4.4 Implementation
+
+Trust scores are stored alongside agent identity and evaluated at every
+Consent Engine check. An agent with trust score below 400 triggers
+additional logging in the Audit Chain.
+
+---
+
+## 5. Shadow Mode (v0.2)
+
+### 5.1 Overview
+
+New policies and rules should be observed before enforced.
+Shadow Mode allows a policy to **log violations without blocking actions**
+for a configurable observation period.
+
+### 5.2 Lifecycle
+
+```
+CREATE → SHADOW (observe, log, don't block)
+  → after observation_period AND min_hits threshold
+    → ENFORCE (active blocking)
+  → after observation_period AND zero hits
+    → KILL (remove unused rule)
+```
+
+### 5.3 Parameters
+
+- `observation_period`: Duration in shadow mode (default: 7 days)
+- `min_hits`: Minimum triggers to promote to enforce (default: 5)
+- `shadow_hits`: Counter of times the rule would have triggered
+
+---
+
+## 6. Cross-Model Verification (CMVK) (v0.2)
+
+### 6.1 Overview
+
+Single points of truth are vulnerable to data corruption.
+CMVK introduces **cross-verification between data stores**
+to detect inconsistencies before they affect decisions.
+
+### 6.2 Verification Types
+
+- **Count verification**: If knowledge base has N entries but rule base
+  has N/10 rules, knowledge is not being converted to actionable rules
+- **Orphan detection**: Rules without supporting evidence in knowledge base
+- **Conflict detection**: Rules that contradict each other across stores
+
+### 6.3 Triggers
+
+CMVK runs during each evolution cycle (alongside Trust Decay)
+and produces warnings in the Audit Chain.
+
+---
+
+## 7. Saga Orchestration (v0.2)
+
+### 7.1 Overview
+
+Multi-step agent operations need rollback capability.
+Saga Orchestration tracks each step of a complex task
+and provides compensating actions on failure.
+
+### 7.2 Primitives
+
+- `sagaBegin(taskId)` — Start tracking a multi-step operation
+- `sagaStep(taskId, step, agent)` — Record successful step completion
+- `sagaRollback(taskId, reason)` — Trigger compensating actions for all completed steps
+
+### 7.3 Audit Integration
+
+All saga events (begin, step, rollback) are recorded in the Audit Chain
+with full context for post-mortem analysis.
+
+---
+
+## 8. Hypervisor Delta (v0.2)
+
+### 8.1 Overview
+
+Agents make commitments (goals, targets, deadlines).
+Hypervisor Delta **compares commitments against actual outcomes**
+to measure agent effectiveness and system drift.
+
+### 8.2 Delta Metrics
+
+- `promised`: What the agent/system committed to achieve
+- `actual`: What was actually achieved
+- `gap`: Percentage difference (0% = perfect, 100% = complete miss)
+- `status`: DONE | ON_TRACK | BEHIND
+
+### 8.3 Usage
+
+Hypervisor Delta is displayed as part of system visualization (Plasma tool)
+and feeds into Trust Decay — agents that consistently miss commitments
+see their trust scores decay faster.
+
+---
+
+## Comparison with Microsoft Agent Governance Toolkit
+
+| ATAP Primitive | Microsoft AGT Equivalent | Differentiation |
+|---------------|------------------------|----------------|
+| Consent Engine | Agent OS (Policy Engine) | ATAP: human-readable policies. AGT: YAML/Rego/Cedar |
+| Audit Chain | Flight Recorder | ATAP: plain language. AGT: structured logs |
+| Arbitration Protocol | — (not present) | ATAP unique: multi-factor agent dispute resolution |
+| Trust Decay | Agent Mesh (Trust Scoring) | Similar concept. AGT: DID-based. ATAP: behavioral |
+| Shadow Mode | Shadow Mode | Same concept, independently developed |
+| CMVK | Cross-Model Verification Kernel | AGT: majority voting. ATAP: store-level verification |
+| Saga Orchestration | Agent Runtime (Saga) | Same concept from distributed systems |
+| Hypervisor Delta | Agent Hypervisor (Delta Engine) | Same concept, different implementation |
+
+### Key Philosophical Difference
+
+Microsoft AGT applies **operating system patterns** (kernels, rings, processes)
+to AI agents. ATAP applies **biological patterns** (evolution, trust decay,
+immune response) to AI agents. Both arrive at similar solutions from
+different foundations.
+
+ATAP is designed for **domain-specific autonomous systems** (DeFi security,
+financial auditing, bounty hunting) where agents evolve and learn.
+AGT is designed for **enterprise middleware** where agents are deployed
+and governed.
+
+---
+
+> ATAP v0.2 — Updated 2026-05-27
+> Total primitives: 8 (3 original + 5 new)
+> Reference implementation: JARVIS OS (84 agents, 40 ATAP-enabled, 4 servers)
+> Validation: NIST AI Agent Standards comment, TON Ecosystem Grant

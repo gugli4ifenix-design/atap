@@ -1,66 +1,31 @@
 # Changelog
 
-All notable changes to ATAP are documented here.
-This project adheres to [Semantic Versioning](https://semver.org/).
+## v0.2.0 (2026-05-27)
 
----
+### New Primitives
+- **Trust Decay** — Numerical trust score (0-1000) per agent, behavioral evolution
+- **Shadow Mode** — New rules observe 7 days before enforcement
+- **Cross-Model Verification (CMVK)** — Cross-check between data stores
+- **Saga Orchestration** — Multi-step rollback capability
+- **Hypervisor Delta** — Promised vs delivered comparison
 
-## [0.1.0] — 2026-03-17
+### Spec Updates
+- SPEC.md expanded from 364 to 531 lines (Sections 4-8 added)
+- Comparison table with Microsoft Agent Governance Toolkit
+- Total primitives: 8 (3 original + 5 new)
+
+### Production Validation
+- All 8 primitives implemented and tested in JARVIS OS
+- 84 agents, 40 ATAP-enabled, 4 servers
+- Trust Decay scoring 14 agent synapses
+- Saga connected to conductor task pipeline
+
+## v0.1.0 (2026-03-17)
 
 ### Initial Release
-
-First public release of the Agent Trust and Accountability Protocol.
-
-The specification and reference implementation emerged from production experience
-building JARVIS OS — a 14-agent autonomous business management system —
-where the absence of internal accountability infrastructure made it impossible
-to delegate real authority to agents without constant human supervision.
-
-**Components:**
-
-- **Consent Engine** — policy-based authorization before agent actions
-  - Human-readable policies defined by system owners
-  - Policy hierarchy: agent:action → agent:* → *:action → *:*
-  - Numeric limits and approval requirements
-
-- **Audit Chain** — human-readable decision trail
-  - Append-only storage (tamper-evident)
-  - Plain-language `reason` field requirement
-  - Storage-agnostic with pluggable adapters
-  - In-memory default for zero-configuration start
-
-- **Arbitration Protocol** — conflict resolution between agents
-  - Priority-based resolution
-  - Explicit winner/loser/reason in every resolution
-  - Escalation to humans for equal-priority conflicts
-  - Pluggable escalation handler (Telegram, Slack, email, etc.)
-
-- **Guard API** — unified check + audit in one call
-
-**Reference Implementation:**
-- Node.js, zero required dependencies
-- Optional Supabase adapter for production persistence
-- Two working examples: basic usage and Kimi 2.5 integration
-
----
-
-## Upcoming
-
-### [0.2.0] — Planned
-
-- Community feedback from v0.1.0 incorporated
-- Python reference implementation
-- PostgreSQL storage adapter
-- Policy persistence (load/save from JSON or database)
-
-### [0.3.0] — Planned
-
-- Rollback specification — standardized undo for agent actions
-- Policy versioning
-- Audit Chain export (CSV, JSON)
-
-### [1.0.0] — Target: Q3 2026
-
-- Stable specification, no breaking changes
-- Implementations in 3+ languages
-- Community-ratified standard
+- Consent Engine — policy-based authorization
+- Audit Chain — human-readable decision trail
+- Arbitration Protocol — conflict resolution between agents
+- npm package `atap` published
+- NIST AI Agent Standards comment submitted
+- TON Ecosystem Grant application

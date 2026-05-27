@@ -59,6 +59,30 @@ const result = atap.arbitration.resolve('devops', 'coordinator',
 // → { winner: 'devops', reason: 'Priority: devops(8) > coordinator(7)' }
 ```
 
+
+### ④ Trust Decay *(v0.2)*
+Numerical trust score (0-1000) for each agent. Grows with success, decays with failure. Agents earn autonomy through behavior, not configuration.
+
+### ⑤ Shadow Mode *(v0.2)*
+New rules observe before they enforce. 7-day shadow period → if triggered 5+ times: enforce. If zero triggers: kill. No false-positive policy bloat.
+
+### ⑥ Cross-Model Verification *(v0.2)*
+Cross-check between data stores. Detects orphan rules, knowledge gaps, and contradictions before they corrupt decisions.
+
+### ⑦ Saga Orchestration *(v0.2)*
+Multi-step operations tracked with rollback capability. If step 3 of 5 fails, steps 1-2 are compensated. Borrowed from distributed systems, applied to agents.
+
+### ⑧ Hypervisor Delta *(v0.2)*
+Compare what agents promised vs what they delivered. Gap percentage feeds back into Trust Decay — consistent misses lower trust scores automatically.
+
+---
+
+### v0.2: Inspired by Microsoft Agent Governance Toolkit
+
+After analyzing Microsoft's open-source [Agent Governance Toolkit](https://github.com/microsoft/agent-governance-toolkit) (7 packages, 2.3K+ stars, OWASP 10/10 coverage), we found significant convergence with ATAP's approach. Five new primitives were added, drawing from both AGT's patterns and our own production experience with 84 autonomous agents.
+
+**Key difference**: AGT applies OS kernel patterns. ATAP applies biological evolution patterns. Both arrive at similar solutions from different foundations.
+
 ---
 
 ## Why This Matters
